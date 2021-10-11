@@ -85,12 +85,17 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Future.wait<void>(
                   List<Future<void>>.generate(
-                    10,
+                    1,
                     (int i) => Future<void>.delayed(
                       Duration(seconds: i),
                       () => dio.get(
-                        'https://api.github.com'
-                        '/?_t=${DateTime.now().millisecondsSinceEpoch}&$i',
+                          // 'https://wanandroid.com/wxarticle/chapters/json'
+                        // 'https://www.wanandroid.com/tree/json'
+                          'https://wanandroid.com/wxarticle/list/405/1/json?k=Java'
+                        // 'https://api.github.com'
+                        // // '/?_t=${DateTime.now().millisecondsSinceEpoch}&$i',
+                        //   '/?_t=1633850792442&$i'
+
                       ),
                     ),
                   ),

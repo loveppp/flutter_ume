@@ -2,10 +2,14 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 4/13/21 1:58 PM
 ///
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' ;
+
+
+import 'package:flutter/material.dart';
 
 import '../constants/constants.dart';
 import '../instances.dart';
+
 
 int get _timestamp => DateTime.now().millisecondsSinceEpoch;
 
@@ -18,8 +22,14 @@ int get _timestamp => DateTime.now().millisecondsSinceEpoch;
 ///  - Deliver the [Response] to the container.
 class UMEDioInterceptor extends Interceptor {
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async{
     options.extra[DIO_EXTRA_START_TIME] = _timestamp;
+    // InspectorInstance.httpContainer.breakPointList.forEach((element) {
+    //   if (options.path == element) {
+    //     options.path = 'https://api.github.com/?_t=1633794707179&0';
+    //   }
+    // });
+    // var requestOptions = await InspectorInstance.httpContainer.requestBreak(options);
     handler.next(options);
   }
 
@@ -27,10 +37,11 @@ class UMEDioInterceptor extends Interceptor {
   void onResponse(
     Response<dynamic> response,
     ResponseInterceptorHandler handler,
-  ) {
+  ) async{
     response.requestOptions.extra[DIO_EXTRA_END_TIME] = _timestamp;
-    InspectorInstance.httpContainer.addRequest(response);
-    handler.next(response);
+    var requestOptions = await InspectorInstance.httpContainer.responsetBreak(response);
+    InspectorInstance.httpContainer.addRequest(requestOptions);
+    handler.next(requestOptions);
   }
 
   @override
@@ -42,3 +53,6 @@ class UMEDioInterceptor extends Interceptor {
     handler.next(err);
   }
 }
+
+
+

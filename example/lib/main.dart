@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey:InspectorInstance.httpContainer.navigatorKey,
       title: 'UME Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,

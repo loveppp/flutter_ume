@@ -30,6 +30,8 @@ ButtonStyle _buttonStyle(
 }
 
 class DioPluggableState extends State<DioInspector> {
+
+
   @override
   void initState() {
     super.initState();
@@ -192,6 +194,9 @@ class _ResponseCardState extends State<_ResponseCard> {
   void _switchExpand() {
     _isExpanded.value = !_isExpanded.value;
   }
+  void _addBreakPoint() {
+    InspectorInstance.httpContainer.breakPointList.add('$_requestUri');
+  }
 
   Response<dynamic> get _response => widget.response;
 
@@ -253,7 +258,17 @@ class _ResponseCardState extends State<_ResponseCard> {
       onPressed: _switchExpand,
       style: _buttonStyle(context),
       child: const Text(
-        'Detail🔍',
+        'Detaiaal🔍',
+        style: TextStyle(fontSize: 12, height: 1.2),
+      ),
+    );
+  }
+  Widget _breakPoint(BuildContext context) {
+    return TextButton(
+      onPressed: _addBreakPoint,//添加断电
+      style: _buttonStyle(context),
+      child: const Text(
+        'breakPointer⭕️',
         style: TextStyle(fontSize: 12, height: 1.2),
       ),
     );
@@ -287,6 +302,8 @@ class _ResponseCardState extends State<_ResponseCard> {
         Text('${_duration.inMilliseconds}ms'),
         const Spacer(),
         _detailButton(context),
+        SizedBox(width: 10,),
+        _breakPoint(context),
       ],
     );
   }
