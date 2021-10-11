@@ -19,10 +19,12 @@ class HttpContainer extends ChangeNotifier {
     // 'https://wanandroid.com/wxarticle/chapters/json'
     // 'https://wanandroid.com/wxarticle/list/405/1/json?k=Java'
     // 'https://www.wanandroid.com/tree/json'
-
   ];
-  final GlobalKey<NavigatorState> navigatorKey =
-      new GlobalKey<NavigatorState>();
+  late GlobalKey<NavigatorState> navigatorKey;
+
+  setNavigatorState1(GlobalKey<NavigatorState> navigatorKey) {
+    this.navigatorKey = navigatorKey;
+  }
 
   /// Paging fields.
   int get page => _page;
@@ -31,7 +33,9 @@ class HttpContainer extends ChangeNotifier {
 
   Future<RequestOptions> requestBreak(RequestOptions requestOptions) async {
     for (int i = 0; i < breakPointList.length; i++) {
+      print('进入断点' + breakPointList[i] + '   ' + requestOptions.path);
       if (breakPointList[i] == requestOptions.path) {
+        print('进入弹框' + breakPointList[i] + '   ' + requestOptions.path);
         return await _alertDialog(requestOptions);
       }
     }
@@ -42,7 +46,7 @@ class HttpContainer extends ChangeNotifier {
     Response<dynamic> response,
   ) async {
     for (int i = 0; i < breakPointList.length; i++) {
-      if (breakPointList[i] == response.requestOptions.path) {
+      if (breakPointList[i].contains(response.requestOptions.path)) {
         return await _alertResponseDialog(response);
       }
     }
@@ -180,7 +184,7 @@ class HttpContainer extends ChangeNotifier {
             children: [
               Text(
                 '$key:  ',
-                style: TextStyle(fontSize: 10, color: Colors.redAccent),
+                style: TextStyle(fontSize: 14, color: Colors.redAccent),
               ),
               ...mapWidget(mapDataValue) //显示map对象内的字段
             ],
@@ -188,23 +192,20 @@ class HttpContainer extends ChangeNotifier {
         }
       } else {
         // return Text('是集合');
-        List<Widget> widgets =  [];
+        List<Widget> widgets = [];
         mapDataValue.forEach((element) {
           widgets.addAll(mapWidget(element));
-          // widgets.add(Text('1221'));
-          widgets.add(SizedBox(height: 10,));
+          widgets.add(SizedBox(
+            height: 10,
+          ));
         });
-        return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-          '$key:  ',
-          style: TextStyle(fontSize: 10, color: Colors.redAccent),
-        )
-            ,
-            ...widgets
-          ]
-        );
+            '$key:  ',
+            style: TextStyle(fontSize: 14, color: Colors.redAccent),
+          ),
+          ...widgets
+        ]);
       }
     }).toList();
   }
@@ -223,98 +224,52 @@ class HttpContainer extends ChangeNotifier {
               mapDataValue[childMapKey].toString(),
             ),
           );
-        }else if(mapDataValue[childMapKey] is Map){
+        } else if (mapDataValue[childMapKey] is Map) {
           //是map
-         return Column(
-           children: mapWidget(mapDataValue[childMapKey]),
-         );//值任然是map的化 递归调用
-        }else{
+          return Column(
+            children: mapWidget(mapDataValue[childMapKey]),
+          ); //值任然是map的化 递归调用
+        } else {
           //是集合
-          List<Widget> widgets =  [];
+          List<Widget> widgets = [];
           mapDataValue[childMapKey].forEach((element) {
-            // widgets.add(Text('1234'));
-            widgets.addAll(mapWidget(element));
+            if (element is String) {
+              var container = getOnlyListWidget(element);
+              widgets.add(container);
+            } else {
+              widgets.addAll(mapWidget(element));
+            }
+            widgets.add(SizedBox(
+              height: 10,
+            ));
             // widgets.add(Container(height: 300,));
           });
           return Container(
             padding: EdgeInsets.only(left: 10),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$childMapKey:  ',
-                    style: TextStyle(fontSize: 10, color: Colors.redAccent),
-                  )
-                  ,
-                  ...widgets
-                ]
-            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                '$childMapKey:  ',
+                style: TextStyle(fontSize: 14, color: Colors.redAccent),
+              ),
+              ...widgets
+            ]),
           );
-          // return Column(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Text(
-          //       '$key:  ',
-          //       style: TextStyle(fontSize: 10, color: Colors.redAccent),
-          //     ),
-          //     Column(
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: datas.map((e) {
-          //         var e2 = e as Map;
-          //         return Container(
-          //           padding: EdgeInsets.only(left: 10, top: 10),
-          //           child: Column(
-          //             crossAxisAlignment: CrossAxisAlignment.start,
-          //             children: e2.keys.map(
-          //                   (mapKey) {
-          //                 late TextEditingController _controller =
-          //                 new TextEditingController(
-          //                     text: e2[mapKey].toString());
-          //                 return Container(
-          //                   height: 15,
-          //                   child: Row(
-          //                     children: [
-          //                       Text(
-          //                         '$mapKey: ',
-          //                         style: TextStyle(
-          //                             fontSize: 10, color: Colors.redAccent),
-          //                       ),
-          //                       Expanded(
-          //                         child: TextField(
-          //                           controller: _controller,
-          //                           onChanged: (value) {
-          //                             if (mapDataValue is int) {
-          //                               map[e] = int.parse(value);
-          //                             } else if (mapDataValue is double) {
-          //                               map[e] = double.parse(value);
-          //                             } else {
-          //                               map[e] = value;
-          //                             }
-          //                           },
-          //                           maxLines: 1,
-          //                           decoration: InputDecoration(
-          //                             contentPadding: EdgeInsets.all(0),
-          //                             border: OutlineInputBorder(
-          //                                 borderSide: BorderSide.none),
-          //                           ),
-          //                           style: TextStyle(fontSize: 10),
-          //                         ),
-          //                       )
-          //                     ],
-          //                   ),
-          //                 );
-          //               },
-          //             ).toList(),
-          //           ),
-          //         );
-          //       }).toList(),
-          //     ),
-          //   ],
-          // );
         }
-
       },
     ).toList();
+  }
+
+  Container getOnlyListWidget(String element) {
+    late TextEditingController _controller =
+    new TextEditingController(text: element);
+    return Container(
+              padding: EdgeInsets.only(left: 10),
+              child: Text(
+                '$element:  ',
+                style: TextStyle(fontSize: 14),
+              ),
+            );
   }
 
   Container getCommonItemWidget(Map map, String key, String value) {
@@ -327,7 +282,7 @@ class HttpContainer extends ChangeNotifier {
         children: [
           Text(
             '$key:  ',
-            style: TextStyle(fontSize: 10, color: Colors.redAccent),
+            style: TextStyle(fontSize: 14, color: Colors.redAccent),
           ),
           Expanded(
             child: TextField(
@@ -346,7 +301,7 @@ class HttpContainer extends ChangeNotifier {
                 contentPadding: EdgeInsets.all(0),
                 border: OutlineInputBorder(borderSide: BorderSide.none),
               ),
-              style: TextStyle(fontSize: 10),
+              style: TextStyle(fontSize: 14),
             ),
           )
         ],

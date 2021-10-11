@@ -184,18 +184,35 @@ class _ResponseCard extends StatefulWidget {
 
 class _ResponseCardState extends State<_ResponseCard> {
   final ValueNotifier<bool> _isExpanded = ValueNotifier<bool>(false);
-
+  late bool isPointBreak=false ;
   @override
   void dispose() {
     _isExpanded.dispose();
     super.dispose();
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    InspectorInstance.httpContainer.breakPointList.forEach((element) {
+      if(_requestUri.toString().contains(element)){
+        isPointBreak = true;
+      }
+    });
   }
 
   void _switchExpand() {
     _isExpanded.value = !_isExpanded.value;
   }
   void _addBreakPoint() {
-    InspectorInstance.httpContainer.breakPointList.add('$_requestUri');
+    if(InspectorInstance.httpContainer.breakPointList.contains('$_requestUri')){
+      InspectorInstance.httpContainer.breakPointList.removeWhere((element) => element=='$_requestUri');
+    }else{
+      InspectorInstance.httpContainer.breakPointList.add('$_requestUri');
+    }
+    setState(() {
+      isPointBreak = !isPointBreak;
+    });
   }
 
   Response<dynamic> get _response => widget.response;
@@ -258,17 +275,18 @@ class _ResponseCardState extends State<_ResponseCard> {
       onPressed: _switchExpand,
       style: _buttonStyle(context),
       child: const Text(
-        'Detaiaal🔍',
+        'Detaia🔍',
         style: TextStyle(fontSize: 12, height: 1.2),
       ),
     );
   }
   Widget _breakPoint(BuildContext context) {
+   String text = isPointBreak?'breakPoint⭕️':'breakPoint';
     return TextButton(
       onPressed: _addBreakPoint,//添加断电
       style: _buttonStyle(context),
-      child: const Text(
-        'breakPointer⭕️',
+      child:  Text(
+        text,
         style: TextStyle(fontSize: 12, height: 1.2),
       ),
     );

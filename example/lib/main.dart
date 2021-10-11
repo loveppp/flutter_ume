@@ -50,6 +50,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    InspectorInstance.httpContainer.setNavigatorState1(GlobalKey<NavigatorState>());
     return MaterialApp(
       navigatorKey:InspectorInstance.httpContainer.navigatorKey,
       title: 'UME Demo',
