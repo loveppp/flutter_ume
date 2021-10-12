@@ -194,10 +194,11 @@ class HttpContainer extends ChangeNotifier {
         // return Text('是集合');
         List<Widget> widgets = [];
         mapDataValue.forEach((element) {
-          widgets.addAll(mapWidget(element));
           widgets.add(SizedBox(
             height: 10,
           ));
+          widgets.addAll(mapWidget(element));
+
         });
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
@@ -233,15 +234,18 @@ class HttpContainer extends ChangeNotifier {
           //是集合
           List<Widget> widgets = [];
           mapDataValue[childMapKey].forEach((element) {
+            widgets.add(SizedBox(
+              height: 10,
+            ));
             if (element is String) {
               var container = getOnlyListWidget(element);
               widgets.add(container);
             } else {
               widgets.addAll(mapWidget(element));
             }
-            widgets.add(SizedBox(
-              height: 10,
-            ));
+            // widgets.add(SizedBox(
+            //   height: 10,
+            // ));
             // widgets.add(Container(height: 300,));
           });
           return Container(
@@ -276,7 +280,7 @@ class HttpContainer extends ChangeNotifier {
     late TextEditingController _controller =
         new TextEditingController(text: value);
     return Container(
-      height: 15,
+      height: 18,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
