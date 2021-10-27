@@ -15,11 +15,7 @@ class HttpContainer extends ChangeNotifier {
   /// Store all responses.
   List<Response<dynamic>> get requests => _requests;
   final List<Response<dynamic>> _requests = <Response<dynamic>>[];
-  final List<String> breakPointList = <String>[
-    // 'https://wanandroid.com/wxarticle/chapters/json'
-    // 'https://wanandroid.com/wxarticle/list/405/1/json?k=Java'
-    // 'https://www.wanandroid.com/tree/json'
-  ];
+  final List<String> breakPointList = <String>[];
   late GlobalKey<NavigatorState> navigatorKey;
 
   setNavigatorState1(GlobalKey<NavigatorState> navigatorKey) {
